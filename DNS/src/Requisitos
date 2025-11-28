@@ -1,0 +1,72 @@
+Fases:
+- Primera Fase:
+    - En un archivo, almacena un conjunto de pares dominio-IP. El servidor debe leer este archivo
+      y mantener un diccionario con el contenido del fichero. Para que te resulte sencillo los
+      siguientes pasos, te aconsejo que definas el diccionario como HashMap<String,
+      List<Registro>>, donde Registro debe almacenar el tipo (A/CNAME/MX) y el valor.
+    - Servidor capaz de:
+        - Esperar una conexión
+        - Recibir una linea con el siguiente comando:
+            LOOKUP <tipo> <dominio>
+        - Si existe responde:
+            200 172.217.17.4
+        - Si no existe responde:
+            404 Not Found
+        -Si durante el procedimiento surge alguna excepción contesta:
+            400 Bad request
+
+- Segunda Fase:
+    - Implementa el comando LIST. Devuelve todas las entradas.
+    - Cliente manda LST
+    - Servidor contesta
+        150 Inicio listado
+        google.com A 172.217.17.4
+        educa.madrid.org A 193.146.123.119
+        example.com A 20.33.123.44
+        chatgpt.com A 172.64.155.209
+        226 Fin listado
+- Tercera Fase:
+    - Guarda en el archivo más tipos de registros DNS.
+        google.com A 172.217.17.4
+        educa.madrid.org A 193.146.123.119
+        example.com A 20.33.123.44
+        chatgpt.com A 172.64.155.209
+        wikipedia.org A 185.15.58.226
+        wikipedia.org MX mx1.mail.com
+        wikipedia.org MX mx2.mail.com
+- Cuarta Fase:
+    - Permite al cliente que introduzca nuevos registros en el servidor. El servidor debe permitir
+      recibir un nuevo comando:
+        REGISTER <dominio> <tipo> <valor>
+        - Ejemplo:
+            REGISTER curso.local A 192.14.32.55
+        - Servidor:
+            200 Record added
+        - El servidor debe añadir el nuevo registro a su diccionario y también debe escribirlo en el
+        fichero.
+- Quinta Fase:
+    - Modifica el código para permitir hasta 5 clientes simultáneos. Cuando un cliente finalice con
+      EXIT, el servidor estará de nuevo disponible para una nueva conexión.
+
+- IMPRESCENDIBLE:
+    - 1º Crear una cuenta de GitHub.
+    - 2º Crea un nuevo repositorio con el siguiente formato de nombre:
+         dns-simplificado-nombre-alumno
+    - 3º Cada vez que trabajes y avances en el proyecto, realiza un commit:
+        git add .
+        git commit -m “Descripción del cambio”
+        git push
+    - 4º Comparte el repositorio con el profesor como colaborador:
+        a. En tu repositorio, ve a Settings
+        b. En el menú de la izquierda, selecciona Collaborators
+        c. Pulsa “Add people”
+        d. Introduce al usuario: soniaalmodovarvialas
+    - 5º Crea un tag para cada fase:
+        git tag v1.0-fase1
+Al final del proyecto tendrás que tener las tags que se describen a continuación:
+    Fase Descripción Nombre del tag
+    1 Servidor simple, 1 conexión, solo A v1.0-fase1
+    2 Comando LIST v1.1-fase2
+    3 Soporte de tipos DNS (CNAME, MX) v1.2-fase3
+    4 REGISTER dinámico v1.3-fase4
+    5 Multicliente v1.4-fase5
