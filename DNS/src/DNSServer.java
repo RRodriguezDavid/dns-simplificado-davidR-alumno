@@ -1,8 +1,9 @@
 import java.io.*;
 import java.net.*;
 import java.util.*;
+
 public class DNSServer {
-    private static Map<String, String> registros = new HashMap<>();
+    private static Map<String, String> registros = new LinkedHashMap<>();
 
     public static void main(String[] args) {
         // Cargar registros desde archivo
@@ -29,11 +30,11 @@ public class DNSServer {
             String linea;
             while ((linea = in.readLine()) != null) {
                 try {
-                    if (linea.equals("EXIT")) {
+                    if (linea.equalsIgnoreCase("EXIT")) {
                         break;
-                    } else if (linea.startsWith("LOOKUP")) {
+                    } else if (linea.toUpperCase().startsWith("LOOKUP")) {
                         String[] partes = linea.split("\\s+");
-                        if (partes.length == 3 && partes[1].equals("A")) {
+                        if (partes.length == 3 && partes[1].equalsIgnoreCase("A")) {
                             String ip = registros.get(partes[2]);
                             if (ip != null) {
                                 out.println("200 " + ip);
@@ -43,6 +44,13 @@ public class DNSServer {
                         } else {
                             out.println("400 Bad request");
                         }
+                    } else if (linea.equalsIgnoreCase("LIST")) {
+                        // Nuevo comando LIST
+                        out.println("150 Inicio listado");
+                        for (Map.Entry<String, String> entry : registros.entrySet()) {
+                            out.println(entry.getKey() + " A " + entry.getValue());
+                        }
+                        out.println("226 Fin listado");
                     } else {
                         out.println("400 Bad request");
                     }
